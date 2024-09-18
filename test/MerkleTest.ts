@@ -1,6 +1,7 @@
 import {
   time,
   loadFixture,
+  impersonateAccount,
 } from "@nomicfoundation/hardhat-toolbox/network-helpers";
 import { anyValue } from "@nomicfoundation/hardhat-chai-matchers/withArgs";
 import { expect } from "chai";
@@ -23,7 +24,7 @@ describe("MerkleAirdrop", function () {
   async function deployContractsAndSetVariables(){
 
     const BAYCNFT = "0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D";
-    const NFT_HOLDER = "0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB";
+    const NFT_HOLDER = "0xaB72c96B990f9baa23aE12B4Ff25b29f8181DDfe";
 
   
 
@@ -72,17 +73,18 @@ describe("MerkleAirdrop", function () {
       const erc20Tokenamount = ethers.parseUnits("900",18); 
 
       
-      await expect(BAYCNFT_CONTRACT.balanceOf(impersonatedSigner.address)).to.be.gte(1);
+       expect(await BAYCNFT_CONTRACT.balanceOf(impersonatedSigner.address)).to.be.gte(1);
       
-      // expect(await merkleAirdrop.connect(impersonatedSigner).checkNFT(otherAccount.address)).to.be.true;
 
     })
-    
-    it("owner should be able to claim ", async function(){
-      const {owner, amount, merkleAirdrop, otherAccount,merkleProof} = await deployContractsAndSetVariables();
-      console.log(merkleProof,"merkle proof");
 
-      expect(merkleAirdrop.connect(otherAccount).claimAirdrop(amount,merkleProof));
+    
+    it("should check if user has claimed before ", async function(){
+      const {owner, amount, merkleAirdrop, otherAccount,merkleProof,impersonatedSigner} = await deployContractsAndSetVariables();
+      const erc20Tokenamount = ethers.parseUnits("900",18); 
+      await merkleAirdrop.connect(impersonatedSigner).claimAirdrop(amount,merkleProof);
+
+      
     })
 
 
